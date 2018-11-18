@@ -3,18 +3,25 @@ var router = express.Router();
 var Article = require("../models").Article;
 
 /* GET articles listing. */
-router.get('/', function(req, res, next) {
-  Article.findAll({order: [["createdAt", "DESC"]]}).then(function(articles){
-    res.render("articles/index", {articles: articles, title: "My Awesome Blog" });
+router.get('/', function (req, res, next) {
+  Article.findAll({
+    order: [
+      ["createdAt", "DESC"]
+    ]
+  }).then(function (articles) {
+    res.render("articles/index", {
+      articles: articles,
+      title: "My Awesome Blog"
+    });
   }).catch(err => res.send(500));
 });
 
 /* POST create article. */
-router.post('/', function(req, res, next) {
-  Article.create(req.body).then(function(article){
+router.post('/', function (req, res, next) {
+  Article.create(req.body).then(function (article) {
     res.redirect("/articles/" + article.id);
-  }).catch(function(err){
-    if(err.name === 'SequelizeValidationError'){
+  }).catch(function (err) {
+    if (err.name === 'SequelizeValidationError') {
       res.render("articles/new", {
         article: Article.build(req.body),
         title: "New Article",
@@ -27,15 +34,21 @@ router.post('/', function(req, res, next) {
 });
 
 /* Create a new article form. */
-router.get('/new', function(req, res, next) {
-  res.render("articles/new", {article: Article.build(), title: "New Article"});
+router.get('/new', function (req, res, next) {
+  res.render("articles/new", {
+    article: Article.build(),
+    title: "New Article"
+  });
 });
 
 /* Edit article form. */
-router.get("/:id/edit", function(req, res, next){
+router.get("/:id/edit", function (req, res, next) {
   Article.findById(req.params.id).then(article => {
-    if(article){
-      res.render("articles/edit", {article: article, title: "Edit Article"});
+    if (article) {
+      res.render("articles/edit", {
+        article: article,
+        title: "Edit Article"
+      });
     } else {
       res.send(404);
     }
@@ -45,10 +58,13 @@ router.get("/:id/edit", function(req, res, next){
 
 
 /* Delete article form. */
-router.get("/:id/delete", function(req, res, next){
+router.get("/:id/delete", function (req, res, next) {
   Article.findById(req.params.id).then(article => {
-    if(article){
-      res.render("articles/delete", {article: article, title: "Delete Article"});
+    if (article) {
+      res.render("articles/delete", {
+        article: article,
+        title: "Delete Article"
+      });
     } else {
       res.send(404);
     }
@@ -57,10 +73,13 @@ router.get("/:id/delete", function(req, res, next){
 
 
 /* GET individual article. */
-router.get("/:id", function(req, res, next){
-  Article.findById(req.params.id).then(function(article){
-    if(article){
-      res.render("articles/show", {article: article, title: article.title});
+router.get("/:id", function (req, res, next) {
+  Article.findById(req.params.id).then(function (article) {
+    if (article) {
+      res.render("articles/show", {
+        article: article,
+        title: article.title
+      });
     } else {
       res.send(404);
     }
@@ -68,13 +87,15 @@ router.get("/:id", function(req, res, next){
 });
 
 /* PUT update article. */
-router.put("/:id", function(req, res, next){
+router.put("/:id", function (req, res, next) {
   Article.findById(req.params.id).then(article => {
-    if(article){
+    if (article) {
       return article.update(req.body);
-    } else { res.send(404) }
-  }).then(article => res.redirect("/articles/" + article.id)).catch(function(err){
-    if(err.name === 'SequelizeValidationError'){
+    } else {
+      res.send(404)
+    }
+  }).then(article => res.redirect("/articles/" + article.id)).catch(function (err) {
+    if (err.name === 'SequelizeValidationError') {
       var article = Article.build(req.body);
       article.id = req.params.id;
 
@@ -90,11 +111,13 @@ router.put("/:id", function(req, res, next){
 });
 
 /* DELETE individual article. */
-router.delete("/:id", function(req, res, next){
-  Article.findById(req.params.id).then(article =>{
-    if(article){
+router.delete("/:id", function (req, res, next) {
+  Article.findById(req.params.id).then(article => {
+    if (article) {
       return article.destroy();
-    } else { res.send(404) }
+    } else {
+      res.send(404)
+    }
   }).then(() => res.redirect("/articles")).catch(err => res.send(500));
 });
 
